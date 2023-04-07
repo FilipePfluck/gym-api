@@ -7,6 +7,7 @@ import {
   metrics,
   validate,
 } from '../controllers/check-ins/check-in'
+import { onlyAdmin } from '../middlewares/only-admin'
 
 export async function checkInsRoutes(app: FastifyInstance) {
   app.addHook('onRequest', verifyJWT)
@@ -15,5 +16,9 @@ export async function checkInsRoutes(app: FastifyInstance) {
   app.get('/check-ins/metrics', metrics)
 
   app.post('/gyms/:gymId/check-ins', create)
-  app.patch('/check-ins/:checkInId/validate', validate)
+  app.patch(
+    '/check-ins/:checkInId/validate',
+    { onRequest: [onlyAdmin] },
+    validate,
+  )
 }
